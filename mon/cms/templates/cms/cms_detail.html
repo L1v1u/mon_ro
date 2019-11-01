@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}{{ object.title}}{% endblock %}
+{% block content %}
+
+
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">{{ object.title}}</div>
+
+                {{ object.content}}
+            </div>
+        </div>
+
+
+{% endblock %}
+
+

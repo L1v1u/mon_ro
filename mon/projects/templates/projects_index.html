@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block content %}
+ <div class="row justify-content-center" style="min-height: 500px">
+
+       <div class="col-md-3">
+                trademan widget
+
+            </div>
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">{% trans "The latest job leads across the Ro" %}</div>
+                    <form name="cauta" action="" method="GET">
+                        <div class="row align-items-center">
+                            <div class="col-sm ml-3 mb-3 " >
+                                <label for="searchTxt" class="col-form-label text-md-left">{% trans 'Keyword' %}</label>
+                                <br/>
+                                <input type="text" name="searchTxt" id="searchTxt" value=" "/>
+                            </div>
+
+                            <div class="col-sm ml-3 mb-3">
+                                <label for="searchTrader"
+                                       class="col-form-label text-md-left">{% trans 'Traderman type' %}</label>
+                                <br/>
+                                <select name="searchTrader" id="searchTrader" value="">
+                                    <option value="">{% trans "Please select value" %}</option>
+
+                                </select>
+                            </div>
+
+                            <div class="col-sm ml-3 mt-1">
+
+                                <button type="submit" name="submit" id="submitFromSearch"
+                                        class="btn btn-primary" value="1">{% trans 'Search' %}</button>
+
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+
+                <div class="card mt-1">
+                    <div class="card-header">
+                        {% blocktrans %}Found :{{ projects_total }} matches.{% endblocktrans %}
+                    </div>
+                </div>
+                <div  class="mt-1">
+                    {% for project in projects %}
+                        <div class="card mt-1 p-3">
+                            <h3>{{ project.title}} , {{ project.loc.loc_name}}</h3>
+                            <h6>Adaugat: {{ project.created_at | date:"M d, Y" }} </h6>
+                            {{ project.description}}
+                            <br/>
+                            <div>
+                                <button name="" class="btn btn-info" onclick="$(location).attr('href', '{% url "all_traders_country" %}')">{% trans "Register to see more" %}</button>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                    <div class="pagination">
+                        <span class="step-links">
+                            {% if projects.has_previous %}
+                                <a href="?page=1">&laquo; first</a>
+                                <a href="?page={{ projects.previous_page_number }}">previous</a>
+                            {% endif %}
+
+                            <span class="current">
+                                Page {{ projects.number }} of {{ projects.paginator.num_pages }}.
+                            </span>
+
+                            {% if projects.has_next %}
+                                <a href="?page={{ projects.next_page_number }}">next</a>
+                                <a href="?page={{ projects.paginator.num_pages }}">last &raquo;</a>
+                            {% endif %}
+                        </span>
+                    </div>
+
+                    </div>
+            </div>
+ </div>
+    <script type="text/javascript" defer>
+
+        $('#searchTrader').val(" ");
+
+    </script>
+{% endblock %}

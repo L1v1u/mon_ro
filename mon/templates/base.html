@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+{% load i18n %}
+    <!-- Fonts -->
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+</head>
+<body>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
+                <div class="container-fluid">
+
+                    <a class="navbar-brand" href="{% url 'home' %}">
+                        Mon.ro
+                    </a>
+                    {% if user.is_authenticated and user.is_trademan %}
+
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <!-- Left Side Of Navbar -->
+                        <ul class="navbar-nav mr-auto">
+
+                        </ul>
+
+                        <!-- Right Side Of Navbar -->
+                        <ul class="navbar-nav ml-auto">
+                            <!-- Authentication Links -->
+                            <li class="nav-item">
+                                <a class="nav-link" href="">{% trans "Projects" %}</a>
+
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="">{% trans 'My Projects' %}</a>
+                            </li>
+
+
+                            <li class="nav-item dropdown">
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
+                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                    {{ user.username }} <span class="caret"></span>
+                                </a>
+
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+
+                                    <a class="dropdown-item" href="">
+                                        {% trans 'Settings' %}
+                                    </a>
+
+                                    <a class="dropdown-item" href="{% url 'logout' %}">
+                                        {% trans 'Logout' %}
+                                    </a>
+
+                                </div>
+                            </li>
+
+                        </ul>
+                    </div>
+
+                    {% else %}
+
+
+                    <button class="navbar-toggler" type="button" data-toggle="collapse"
+                            data-target="#navbarSupportedContent2" aria-controls="navbarSupportedContent2"
+                            aria-expanded="false" aria-label="{% trans 'Toggle navigation' %}">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent2">
+                        <!-- Left Side Of Navbar -->
+                        <ul class="navbar-nav mr-auto">
+
+                        </ul>
+
+                        <!-- Right Side Of Navbar -->
+                        <ul class="navbar-nav ml-auto">
+                            <!-- Authentication Links -->
+                            <li class="nav-item">
+                                <button id="nav-publish-project" name="nav-publish-project" type="button"
+                                        class="btn btn-primary" onclick="document.location='{% url "create_project" %}'">{% trans "Publish project" %}
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'all_traders_country' %}">{% trans 'Find Tradesman' %}</a>
+                            </li>
+
+                            {% if not user.is_authenticated %}
+
+                            <li class="nav-item">
+
+                                <a class="nav-link" href="">{% trans 'Register Tradesman' %}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'login' %}">{% trans 'Login' %}</a>
+                            </li>
+                            {% else %}
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="">{% trans 'My Projects' %}</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
+                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                    {{ user.username }} <span class="caret"></span>
+                                </a>
+
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+
+                                    <a class="dropdown-item" href="">
+                                        {% trans 'Settings' %}
+                                    </a>
+
+                                    <a class="dropdown-item" href="{% url 'logout' %}">
+                                        {% trans 'Logout' %}
+                                    </a>
+                                </div>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                </div>
+
+            </nav>
+        </div>
+    </div>
+<div class="row justify-content-center" >
+    {% if messages %}
+  {% for msg in messages %}
+    <div class="alert alert-info alert-dismissable">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      {{msg.message}}
+    </div>
+  {% endfor %}
+{% endif %}
+</div>
+
+
+
+    {% block content %}
+    {% endblock %}
+
+     <div class="row justify-content-center">
+        <div class="col-md-12">
+            <a href="/c/despre-noi">despre noi</a>
+        </div>
+     </div>
+</div>
+</body>
+</html>
