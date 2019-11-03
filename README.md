@@ -1,4 +1,4 @@
-# Create a tradesman app - Django project 
+# tradesman app - Django project 
 
 
 This is a project that will allow tradesman to quote for projects regular users will publish
