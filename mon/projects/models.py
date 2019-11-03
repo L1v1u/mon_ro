@@ -58,9 +58,9 @@ class Project(models.Model):
     #     db_table = 'projects'
 
 
-class ActiveManager(models.Manager):
+class ActiveProjectManager(models.Manager):
     def get_queryset(self):
-        return super(ActiveManager, self).get_queryset().filter(status=ProjectStatus.APPROVED.value)
+        return super(ActiveProjectManager, self).get_queryset().filter(status=ProjectStatus.APPROVED.value)
 
 
 class ProjectsToTradesman(models.Model):

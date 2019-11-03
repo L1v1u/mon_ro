@@ -6,3 +6,4 @@ djangorestframework
 django-anymail[mailgun]
 django-crispy-forms
 django-autocomplete-light
+django-redis

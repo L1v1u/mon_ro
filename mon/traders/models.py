@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 from datetime import datetime
-
+import enum
 
 class TraderType(models.Model):
     parent_id = models.PositiveIntegerField(blank=True, null=True)
@@ -20,6 +20,17 @@ class TraderType(models.Model):
     #     db_table = 'trader_types'
 
 
+class TradesmanStatus(enum.Enum):
+    COMPLETE = 1
+    INCOMPLETE = 0
+    APPROVED = 2
+
+
+class ActiveTradesmanManager(models.Manager):
+    def get_queryset(self):
+        return super(ActiveTradesmanManager, self).get_queryset().filter(status=TradesmanStatus.APPROVED.value)
+
+
 class Tradesman(models.Model):
     username = models.CharField(max_length=255)
     firstname = models.CharField(max_length=255)
@@ -31,13 +42,19 @@ class Tradesman(models.Model):
     subscription_sms_alerts = models.IntegerField()
     subscription_newsletter = models.IntegerField()
     subscription_surveys = models.IntegerField()
+    status = models.IntegerField(blank=True, null=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, models.DO_NOTHING, blank=True, null=True)
     created_at = models.DateTimeField(default=datetime.now, blank=True, null=True)
     updated_at = models.DateTimeField(default=datetime.now, blank=True, null=True)
+
+    objects = models.Manager()  # The default manager.
+    approved_objects = ActiveTradesmanManager()
+
     #
     # class Meta:
     #     managed = True
     #     db_table = 'tradesmen'
+
 
 
 class TradesmanFeedback(models.Model):
