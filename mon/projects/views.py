@@ -39,7 +39,6 @@ def send_activation_email(self, domain, user):
         self.retry(exc=exc, countdown=180)
 
 
-
 class ProjectsView(View):
     template_name = 'projects_index.html'
 

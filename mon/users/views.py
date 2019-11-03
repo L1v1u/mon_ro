@@ -6,7 +6,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from .tokens import account_activation_token
-from .models import CustomUser, UserProfile
+from .models import CustomUser, UserProfile, UserStatus
 from django.contrib import messages
 from django.forms.models import model_to_dict
 from django.views import View
@@ -69,7 +69,7 @@ class UserProfileSaveView(View):
             subscription_newsletter=data['subscription_newsletter'],
             subscription_surveys=data['subscription_surveys'],
             user_type='user',
-            status= 1)
+            status=UserStatus.COMPLETE.value)
         user_profile.save()
         self.change_projects_status.delay(model_to_dict(request.user))
         return user_profile

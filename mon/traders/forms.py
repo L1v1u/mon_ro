@@ -1,9 +1,8 @@
 from django import forms
-from projects.models import Loc
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Row, Column
-from dal import autocomplete
 from django.utils.translation import ugettext_lazy as _
+from users.models import CustomUser
 
 
 class TradesmanForm(forms.Form):
@@ -69,4 +68,20 @@ class TradesmanForm(forms.Form):
             ),
             Submit('submit', _('Save')))
 
+    def clean_email(self):
+        data = self.cleaned_data['email']
+        try:
+            user = CustomUser.objects.get(email=data.lower())
+            if user:
+                raise forms.ValidationError("Email already used!")
+        except CustomUser.DoesNotExist:
+            return data
 
+    def clean_username(self):
+        data = self.cleaned_data['username']
+        try:
+            user = CustomUser.objects.get(username=data.lower())
+            if user:
+                raise forms.ValidationError("Username already used!")
+        except CustomUser.DoesNotExist:
+            return data

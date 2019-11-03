@@ -10,6 +10,10 @@ class UserTypes(enum.Enum):
     TRADER = "TRADER"
 
 
+class UserStatus(enum.Enum):
+    COMPLETE = 1
+    INCOMPLETE = 0
+
 class CustomUser(AbstractUser):
     # add additional fields in here
     email = models.EmailField(unique=True)

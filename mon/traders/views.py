@@ -4,57 +4,43 @@ from .forms import TradesmanForm
 from .models import Tradesman, TraderType
 from django.forms.models import model_to_dict
 from django.views import View
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
-import logging
-from celery import shared_task
-from projects.models import Project, ProjectStatus
-
-logger = logging.getLogger(__name__)
+from django.contrib.sites.shortcuts import get_current_site
+from users.models import CustomUser, UserProfile, UserTypes, UserStatus
+from django.contrib.auth import login
+from projects.views import send_activation_email
 
 
 class TradesmanSaveView(View):
-
     def get(self, request, *args, **kwargs):
-        # exists = getattr(request.user, 'userprofile', None)
-        # if exists:
-        #     logger.error(request.user.userprofile)
         form = TradesmanForm
         context = {'form': form}
-        return render(request, 'create_profile.html', context)
+        return render(request, 'create_tradesman.html', context)
 
     def post(self, request, *args, **kwargs):
         form = TradesmanForm(data=request.POST)
         if form.is_valid():
-            user_profile = self.save_tradesman(request, form.cleaned_data)
-            return render(request, 'project_created.html', {'user_profile': user_profile})
-        return render(request, 'create_profile.html', {'form': form})
+            tradesman_profile = self.save_tradesman(request, form.cleaned_data)
+            return redirect("create-tradesman-step2")
+        return render(request, 'create_tradesman.html', {'form': form})
 
     def save_tradesman(self, request, data):
-        pass
-        # user_profile = UserProfile(
-        #     user=request.user,
-        #     firstname=data['firstname'],
-        #     lastname=data['lastname'],
-        #     address_1=data['address_1'],
-        #     address_2=data['address_2'],
-        #     address_city=data['address_city'],
-        #     phonenumber=data['phonenumber'],
-        #     subscription_sms_alerts=data['subscription_sms_alerts'],
-        #     subscription_newsletter=data['subscription_newsletter'],
-        #     subscription_surveys=data['subscription_surveys'],
-        #     user_type='user',
-        #     status= 1)
-        # user_profile.save()
-        # self.change_projects_status.delay(model_to_dict(request.user))
-        # return user_profile
-
-    # @shared_task(bind=True)
-    # def change_projects_status(self, user):
-    #     myuser = CustomUser.objects.filter(id=user['id']).first()
-    #
-    #     projects = Project.objects.filter(user=myuser, status=ProjectStatus.INACTIVE.value)
-    #     for project in projects:
-    #         project.status = ProjectStatus.PROFILE_ACTIVE.value
-    #         project.save()
+        try:
+            user = CustomUser.objects.get(email=data['email'].lower())
+        except CustomUser.DoesNotExist:
+            user = CustomUser(email=data['email'].lower(),
+                              username=data['username'].lower(),
+                              accepted_terms_condition=True)
+            user.set_password(data['password'])
+            user.save()
+            login(request, user)
+            current_site = get_current_site(request)
+            send_activation_email.delay(current_site.domain, model_to_dict(user))
+            user_profile = UserProfile(
+                user=request.user,
+                firstname=data['firstname'],
+                lastname=data['lastname'],
+                subscription_newsletter=data['subscription_newsletter'],
+                user_type=UserTypes.TRADER.value,
+                status=UserStatus.INCOMPLETE.value)
+            user_profile.save()
 
