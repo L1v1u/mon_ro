@@ -33,7 +33,34 @@ def get_url(url_path):
         'loc': None
     }
     list_url = url_path.split('/')
-    if len(list_url) > 4:
+    if list_url[0] == 'mester':
+        if len(list_url) == 2:
+            county = County.objects.filter(url_key=list_url[1]).first()
+            if county is None:
+                return empty_list
+            else:
+                return {
+                        'trader_type': None,
+                        'trader_type2': None,
+                        'county': county.id,
+                        'loc': None
+                    }
+
+        elif len(list_url) == 3:
+            county = County.objects.filter(url_key=list_url[1]).first()
+            if county is None:
+                return empty_list
+            else:
+                loc = Loc.objects.filter(url_key=list_url[2]).first()
+                if loc is None:
+                    return empty_list
+                return {
+                        'trader_type': None,
+                        'trader_type2': None,
+                        'county': county.id,
+                        'loc': loc.id
+                    }
+    elif len(list_url) > 4:
         return empty_list
     elif len(list_url) == 1:
         trader_type = TraderType.objects.filter(url_key=list_url[0]).first()
