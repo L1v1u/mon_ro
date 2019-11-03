@@ -2,6 +2,10 @@
 {% load i18n %}
 {% block content %}
 
+
+{{trademan_options}}<br><br>
+
+
 {% for tradsman in tradsmen %}
     {{ tradsman.firstname|upper }}<br>
 {% endfor %}
